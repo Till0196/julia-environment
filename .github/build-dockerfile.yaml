@@ -1,8 +1,9 @@
 name: build-julia-notebook-jp
 
-schedule:
-  - cron: '0 0 * * *'
-on: push
+on: 
+  push:
+  schedule:
+    - cron: '0 0 * * *'
 
 env:
   IMAGE_NAME: julia-notebook-jp
