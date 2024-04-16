@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
 #    image: quay.io/jupyter/julia-notebook:latest
-    image: ghcr.io/till0196/julia-enviroment:latest
+    image: ghcr.io/till0196/julia-environment:latest
     command: >-
       start-notebook.py
       --ip='*'
