@@ -4,7 +4,7 @@
 
 Juliaがインストール済みのJupyter Notebookが立ち上がるDocker環境です。
 
-[Container registry](https://github.com/till0196/julia-environment/pkgs/container/julia-notebook-jp)にて、linux/amd64とlinux/arm64のビルド済みDockerイメージを公開しています。
+[Container registry](https://github.com/till0196/julia-environment/pkgs/container/julia-environment)にて、linux/amd64とlinux/arm64のビルド済みDockerイメージを公開しています。
 
 ## 使い方
 

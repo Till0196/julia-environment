@@ -12,7 +12,7 @@ permissions:
   packages: write
 
 env:
-  IMAGE_NAME: julia-notebook-jp
+  IMAGE_NAME: ${{ github.repository }}
   #set tagname
   TAG_NAME: latest
   #set targetdir
@@ -53,7 +53,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}/julia-notebook-jp
+          images: ghcr.io/${{ github.ACTOR }}/${{ github.repository }}
           tags: ${{ env.TAG_NAME }}
 
       - name: Build and push
