@@ -1,7 +1,9 @@
 name: build-julia-notebook-jp
 
 on: 
-  push:
+  push: 
+    branches:
+      - main
   schedule:
     - cron: '0 0 * * *'
 
