@@ -1,0 +1,10 @@
+{
+    // テーマ
+    // @jupyterlab/apputils-extension:themes
+    // テーママネージャの設定。
+    // *************************************
+
+    // Adaptive Theme
+    // Synchronize visual styling theme with system settings
+    "adaptive-theme": true
+}

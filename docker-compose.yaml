@@ -1,0 +1,24 @@
+version: '3.9'
+services:
+  julia-jupyter:
+    container_name: julia-jupyter
+    build:
+      context: .
+      dockerfile: Dockerfile
+#    image: quay.io/jupyter/julia-notebook:latest
+    image: ghcr.io/till0196/julia-notebook-jp:latest
+    command: >-
+      start-notebook.py
+      --ip='*'
+      --IdentityProvider.token=""
+      --no-browser
+      --allow-root
+    environment:
+      - LANG=ja_JP.UTF-8
+      - LANGUAGE=ja_JP.UTF-8
+    ports:
+      - 8888:8888
+    volumes:
+      - ./work:/home/jovyan/work
+      - ./user-settings:/home/jovyan/.jupyter/lab/user-settings
+      
