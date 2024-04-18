@@ -41,15 +41,15 @@ jobs:
           touch ~/.base_image_digest/previous_base_image_digest
 
       - name: Get previous base image digest
-        id: get_previous_base_image_digest
+        id: get-previous-base-image-digest
         run: |
           echo "previous_base_image_digest=$(cat ~/.base_image_digest/previous_base_image_digest)" >> "$GITHUB_OUTPUT"
 
       - name: Get base image digest
-        id: get_base_image_digest
+        id: get-base-image-digest
         run: |
           base_image_digest=$(docker manifest inspect quay.io/jupyter/julia-notebook:latest -v | jq -r '.[0].Descriptor.digest')
-          if [[ "$base_image_digest" != "${{ steps.get_previous_base_image_digest.outputs.previous_base_image_digest }}" ]]; then
+          if [[ "$base_image_digest" != "${{ steps.get-previous-base-image-digest.outputs.previous_base_image_digest }}" ]]; then
             echo update=false >> "$GITHUB_OUTPUT"
           else
             echo "$base_image_digest >> ~/.base_image_digest/previous_base_image_digest" && \
@@ -67,11 +67,6 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-
-      - name: get base image digest
-        id: get_base_image_digest
-        run: |
-          docker manifest inspect quay.io/jupyter/julia-notebook:latest -v | jq -r '.[0].Descriptor.digest'
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
