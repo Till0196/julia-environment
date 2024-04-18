@@ -6,6 +6,9 @@ Juliaがインストール済みのJupyter Notebookが立ち上がるDocker環�
 
 [Container registry](https://github.com/Till0196/julia-environment/pkgs/container/julia-environment)にて、linux/amd64とlinux/arm64のビルド済みDockerイメージを公開しています。
 
+GitHub Actionsにて、毎日日本時間の24:00に自動でイメージを生成しています。  
+実行時間を削減するため、上流イメージに変更がある場合のみ更新が行われます。
+
 ## 使い方
 
 Dockerと[Docker compose](https://docs.docker.jp/v1.12/compose/install.html)が必要です。
