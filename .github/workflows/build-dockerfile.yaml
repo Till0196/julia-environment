@@ -56,6 +56,11 @@ jobs:
             echo "update=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: echo outputs
+        run: |
+          cat "$GITHUB_OUTPUT"
+          echo ${{ steps.get-base-image-digest.outputs.update }}
+
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
   push-image:
