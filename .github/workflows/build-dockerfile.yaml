@@ -37,13 +37,16 @@ jobs:
       - uses: actions/cache@v4
         id: cache
         with:
-          path: /tmp
+          path: ~/.base_image_digest
           key: ${{ runner.os }}-${{ hashFiles('**/Dockerfile') }}-${{ steps.get-base-image-digest.outputs.base_image_digest }}
 
       - name: set update
         id: set-update
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
+          mkdir -p ~/.base_image_digest
+          touch ~/.base_image_digest/previous_base_image_digest
+          echo "${{ steps.get-base-image-digest.outputs.base_image_digest }}" >> ~/.base_image_digest/previous_base_image_digest
           echo "update=true" >> "$GITHUB_OUTPUT"
 
 
