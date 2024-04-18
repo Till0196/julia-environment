@@ -31,22 +31,67 @@ jobs:
       - name: Get base image digest
         id: get-base-image-digest
         run: |
-          base_image_digest=$(docker manifest inspect quay.io/jupyter/julia-notebook:latest -v | jq -r '.[0].Descriptor.digest')
-          echo "base_image_digest=$base_image_digest" >> "$GITHUB_OUTPUT"
+          mkdir -p ~/.base_image_digest
+          touch ~/.base_image_digest/previous_base_image_digest
+
+          # Dockerfile のパスを指定
+          DOCKERFILE="Dockerfile"
+
+          # Dockerfile 内の FROM ステートメントの値を再帰的に取得する関数
+          function get_from_statements() {
+              local dockerfile=$1
+              local from_statements=()
+
+              # Dockerfile を行ごとに読み込み、FROM ステートメントを探す
+              while IFS= read -r line; do
+                  if [[ $line =~ ^FROM[[:space:]]+(.*)$ ]]; then
+                      local from_statement=${BASH_REMATCH[1]}
+                      from_statements+=("$from_statement")
+                  fi
+              done < "$dockerfile"
+
+              echo "${from_statements[@]}"
+          }
+
+          function get_image_digest() {
+              local image=$1
+              local digest=$(docker manifest inspect "$from_statement" -v | jq -r '.[0].Descriptor.digest' 2>/dev/null)
+
+              if [ -n "$digest" ]; then
+                  echo "$digest"
+              fi
+          }
+
+          from_statements=($(get_from_statements "$DOCKERFILE"))
+
+          if [ ${#from_statements[@]} -eq 0 ]; then
+              echo "Dockerfile 内で FROM ステートメントが見つかりませんでした。"
+          else
+              digest_list=()
+
+              for from_statement in "${from_statements[@]}"; do
+                  # イメージの digest を取得
+                  digest=$(get_image_digest "$from_statement")
+                  digest_list+=("$digest")
+              done
+
+              for digest in "${digest_list[@]}"; do
+                  echo "$digest" > ~/.base_image_digest/digests.txt
+              done
+          fi
+
+          echo digest-list=$(md5sum ~/.base_image_digest/digests.txt) >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v4
         id: cache
         with:
           path: ~/.base_image_digest
-          key: ${{ runner.os }}-${{ hashFiles('**/Dockerfile') }}-${{ steps.get-base-image-digest.outputs.base_image_digest }}
+          key: ${{ runner.os }}-${{ hashFiles('**/Dockerfile') }}-${{ steps.get-base-image-digest.outputs.digest-list }}
 
-      - name: set update
+      - name: set update flag
         id: set-update
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          mkdir -p ~/.base_image_digest
-          touch ~/.base_image_digest/previous_base_image_digest
-          echo "${{ steps.get-base-image-digest.outputs.base_image_digest }}" >> ~/.base_image_digest/previous_base_image_digest
           echo "update=true" >> "$GITHUB_OUTPUT"
 
 
