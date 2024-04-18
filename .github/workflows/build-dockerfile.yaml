@@ -55,8 +55,8 @@ jobs:
           if [[ "$base_image_digest" == "${{ steps.get-previous-base-image-digest.outputs.previous_base_image_digest }}" ]]; then
             echo "update=false" >> "$GITHUB_OUTPUT"
           else
-            echo $base_image_digest
-            echo "$base_image_digest >> ~/.base_image_digest/previous_base_image_digest" && \
+            echo "$base_image_digest" >> ~/.base_image_digest/previous_base_image_digest && \
+            cat ~/.base_image_digest/previous_base_image_digest && \
             echo "update=true" >> "$GITHUB_OUTPUT"
           fi
 
