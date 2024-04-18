@@ -33,7 +33,7 @@ jobs:
         id: get-base-image-digest
         run: |
           mkdir -p ~/.base_image_digest
-          touch ~/.base_image_digest/previous_base_image_digest
+          touch ~/.base_image_digest/digests.txt
 
           # Dockerfile のパスを指定
           DOCKERFILE="Dockerfile"
