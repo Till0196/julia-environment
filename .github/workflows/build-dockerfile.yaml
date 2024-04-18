@@ -43,6 +43,9 @@ jobs:
       - name: Get previous base image digest
         id: get-previous-base-image-digest
         run: |
+          pwd
+          ls -a -l ~/.base_image_digest/
+          cat ~/.base_image_digest/previous_base_image_digest
           echo "previous_base_image_digest=$(cat ~/.base_image_digest/previous_base_image_digest)" >> "$GITHUB_OUTPUT"
 
       - name: Get base image digest
