@@ -34,7 +34,7 @@ jobs:
           mkdir -p ~/.base_image_digest
           base_image_digest=(docker manifest inspect quay.io/jupyter/julia-notebook:latest -v | jq -r '.[0].Descriptor.digest')
           echo "$base_image_digest" >> "~/.base_image_digest/previous_base_image_digest"
-          echo "base_image_digest=$base_image_digest" >> "$GITHUB_OUTPUT"
+          echo "base-image-digest=$base_image_digest" >> "$GITHUB_OUTPUT"
 
       - uses: actions/cache@v4
         id: cache
@@ -47,7 +47,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p ~/.base_image_digest
-          echo "${{ setps.get-base-image-digest.outputs.base_image_digest }}" >> ~/.base_image_digest/previous_base_image_digest
+          echo "${{ setps.get-base-image-digest.outputs.base-image-digest }}" >> ~/.base_image_digest/previous_base_image_digest
           echo "update=true" >> "$GITHUB_OUTPUT"
 
 
