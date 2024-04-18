@@ -32,7 +32,7 @@ jobs:
         id: get-base-image-digest
         run: |
           mkdir -p ~/.base_image_digest
-          base_image_digest=(docker manifest inspect quay.io/jupyter/julia-notebook:latest -v | jq -r '.[0].Descriptor.digest')
+          base_image_digest=$(docker manifest inspect quay.io/jupyter/julia-notebook:latest -v | jq -r '.[0].Descriptor.digest')
           echo "$base_image_digest" >> "~/.base_image_digest/previous_base_image_digest"
           echo "base_image_digest=$base_image_digest" >> "$GITHUB_OUTPUT"
 
