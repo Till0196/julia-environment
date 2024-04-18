@@ -22,9 +22,11 @@ env:
 jobs:
   upstream-digest-check:
     runs-on: ubuntu-latest
+    outputs:
+      update: ${{ steps.get_base_image_digest.outputs.update }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - uses: actions/cache@v4
         id: cache
