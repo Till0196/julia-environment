@@ -41,7 +41,7 @@ jobs:
         id: cache
         with:
           path: ~/.base_image_digest
-          key: ${{ runner.os }}-${{ hashFiles('**/Dockerfile') }}-${{ hashFiles('~/.base_image_digest/previous_base_image_digest') }}
+          key: ${{ runner.os }}-${{ hashFiles('**/Dockerfile') }}-${{ hashFiles('**/.base_image_digest/previous_base_image_digest') }}
 
       - name: set update
         id: set-update
