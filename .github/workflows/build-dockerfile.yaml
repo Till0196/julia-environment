@@ -41,14 +41,14 @@ jobs:
       - name: Get previous base image digest
         id: get_previous_base_image_digest
         run: |
-          echo "previous_base_image_digest=$(cat .base_image_digest/previous_base_image_digest)" >> "$GITHUB_OUTPUT"
+          echo "previous_base_image_digest=$(cat ~/.base_image_digest/previous_base_image_digest)" >> "$GITHUB_OUTPUT"
 
       - name: Get base image digest
         id: get_base_image_digest
         run: |
           base_image_digest=$(docker manifest inspect quay.io/jupyter/julia-notebook:latest -v | jq -r '.[0].Descriptor.digest')
           if [[ "$base_image_digest" != "${{ steps.get_previous_base_image_digest.outputs.previous_base_image_digest }}" ]]; then
-            echo "$base_image_digest >> .base_image_digest/previou_base_image_digest"
+            echo "$base_image_digest >> ~/.base_image_digest/previou_base_image_digest"
             echo update=false >> "$GITHUB_OUTPUT"
           else
             echo update=true >> "$GITHUB_OUTPUT"
