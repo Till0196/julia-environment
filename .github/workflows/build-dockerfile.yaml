@@ -23,7 +23,7 @@ jobs:
   upstream-digest-check:
     runs-on: ubuntu-latest
     outputs:
-      update: ${{ steps.get_base_image_digest.outputs.update }}
+      update: ${{ steps.get-base-image-digest.outputs.update }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
