@@ -42,24 +42,45 @@ jobs:
           function get_from_statements() {
               local dockerfile=$1
               local from_statements=()
+              declare -A args=() # 連想配列を宣言
 
               # Dockerfile を行ごとに読み込み、FROM ステートメントを探す
               while IFS= read -r line; do
-                  if [[ $line =~ ^FROM[[:space:]]+(.*)$ ]]; then
-                      local from_statement=${BASH_REMATCH[1]}
+                  if [[ $line =~ ^ARG[[:space:]]+(.*)$ ]]; then
+                      local arg=("${BASH_REMATCH[1]//[\"\']}")
+                      local arg_name=${arg%%=*}
+                      local arg_value=${arg#*=}
+
+                      args[$arg_name]=$arg_value
+
+                  elif [[ $line =~ ^FROM[[:space:]]+(.*):(.*)$ ]]; then
+                      local from_statement=${BASH_REMATCH[1]}:${BASH_REMATCH[2]}
+
+                      # ASが後にあったらAS以降を消して上書き
+                      if [[ $from_statement == *" AS"* ]]; then
+                          from_statement=${from_statement%% AS*}
+                      fi
+
+                      # 環境変数を置換
+                      for arg_name in "${!args[@]}"; do
+                          from_statement=${from_statement//\$\{$arg_name\}/${args[${arg_name}]}}
+                      done
+
                       from_statements+=("$from_statement")
                   fi
               done < "$dockerfile"
-
               echo "${from_statements[@]}"
           }
 
+          # イメージの digest を取得する関数
           function get_image_digest() {
               local image=$1
               local digest=$(docker manifest inspect "$from_statement" -v | jq -r '.[0].Descriptor.digest' 2>/dev/null)
 
               if [ -n "$digest" ]; then
                   echo "$digest"
+              else
+                  echo "イメージ '$image' の digest を取得できませんでした。"
               fi
           }
 
