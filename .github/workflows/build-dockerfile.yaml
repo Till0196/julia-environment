@@ -50,10 +50,10 @@ jobs:
         run: |
           base_image_digest=$(docker manifest inspect quay.io/jupyter/julia-notebook:latest -v | jq -r '.[0].Descriptor.digest')
           if [[ "$base_image_digest" != "${{ steps.get-previous-base-image-digest.outputs.previous_base_image_digest }}" ]]; then
-            echo update=false >> "$GITHUB_OUTPUT"
+            echo "update=false" >> "$GITHUB_OUTPUT"
           else
             echo "$base_image_digest >> ~/.base_image_digest/previous_base_image_digest" && \
-            echo update=true >> "$GITHUB_OUTPUT"
+            echo "update=true" >> "$GITHUB_OUTPUT"
           fi
 
   # Push image to GitHub Packages.
