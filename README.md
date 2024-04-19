@@ -1,5 +1,8 @@
 # julia-environment
 
+[![build-julia-notebook-jp](https://github.com/Till0196/julia-environment/actions/workflows/build-dockerfile.yaml/badge.svg)](https://github.com/Till0196/julia-environment/actions/workflows/build-dockerfile.yaml)
+[![image size](https://ghcr-badge.egpl.dev/till0196/julia-environment/size?color=%2344cc11&tag=latest&label=image+size)](https://github.com/Till0196/julia-environment/pkgs/container/julia-environment)
+
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/till0196/julia-environment)
 
 Juliaがインストール済みのJupyter Notebookが立ち上がるDocker環境です。
