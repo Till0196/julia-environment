@@ -7,21 +7,18 @@ services:
     #   dockerfile: Dockerfile
     # image: quay.io/jupyter/julia-notebook:latest
     image: ghcr.io/till0196/julia-environment:latest
-    command: |
-      /bin/bash -c "
-        sudo chown -R $${NB_USER}:$${NB_GID} /home/jovyan/.julia &&
-        start-notebook.py
-        --ip='*'
-        --IdentityProvider.token=""
-        --no-browser
-        --allow-root
-      "
+    command: >-
+      start-notebook.py
+      --ip='*'
+      --IdentityProvider.token=""
+      --no-browser
+      --allow-root
     environment:
       - LANG=ja_JP.UTF-8
       - LANGUAGE=ja_JP.UTF-8
-      - GRANT_SUDO=yes
       - JULIA_DEPOT_PATH=/home/jovyan/.julia:/opt/julia
       - JULIA_PKGDIR=/home/jovyan/.julia:/opt/julia
+      - CHOWN_EXTRA=/home/jovyan/.julia
     ports:
       - 8888:8888
     volumes:
