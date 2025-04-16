@@ -1,4 +1,3 @@
-version: '3.9'
 services:
   julia-jupyter:
     container_name: julia-jupyter
@@ -8,7 +7,7 @@ services:
     #   dockerfile: Dockerfile
     # image: quay.io/jupyter/julia-notebook:latest
     image: ghcr.io/till0196/julia-environment:latest
-    command: 
+    command: |
       /bin/bash -c "
         sudo chown -R $${NB_USER}:$${NB_GID} /home/jovyan/.julia &&
         start-notebook.py
