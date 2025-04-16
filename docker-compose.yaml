@@ -3,9 +3,9 @@ services:
   julia-jupyter:
     container_name: julia-jupyter
     user: root
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     # image: quay.io/jupyter/julia-notebook:latest
     image: ghcr.io/till0196/julia-environment:latest
     command: 
