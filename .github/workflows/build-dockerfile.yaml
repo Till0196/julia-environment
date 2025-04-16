@@ -175,7 +175,7 @@ jobs:
     steps:
       - name: Prepare
         run: |
-          echo "REGISTRY_IMAGE=`echo ghcr.io/${{ github.repository_owner }}/${{ env.REGISTRY_IMAGE }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}
+          echo "REGISTRY_IMAGE=`echo ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}
 
       - name: Download digests
         uses: actions/download-artifact@v4
