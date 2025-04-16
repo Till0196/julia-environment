@@ -2,23 +2,34 @@ version: '3.9'
 services:
   julia-jupyter:
     container_name: julia-jupyter
+    user: root
     build:
       context: .
       dockerfile: Dockerfile
-#    image: quay.io/jupyter/julia-notebook:latest
+    # image: quay.io/jupyter/julia-notebook:latest
     image: ghcr.io/till0196/julia-environment:latest
-    command: >-
-      start-notebook.py
-      --ip='*'
-      --IdentityProvider.token=""
-      --no-browser
-      --allow-root
+    command: 
+      /bin/bash -c "
+        sudo chown -R $${NB_USER}:$${NB_GID} /home/jovyan/.julia &&
+        start-notebook.py
+        --ip='*'
+        --IdentityProvider.token=""
+        --no-browser
+        --allow-root
+      "
     environment:
       - LANG=ja_JP.UTF-8
       - LANGUAGE=ja_JP.UTF-8
+      - GRANT_SUDO=yes
+      - JULIA_DEPOT_PATH=/home/jovyan/.julia:/opt/julia
+      - JULIA_PKGDIR=/home/jovyan/.julia:/opt/julia
     ports:
       - 8888:8888
     volumes:
       - ./work:/home/jovyan/work
       - ./user-settings:/home/jovyan/.jupyter/lab/user-settings
+      - julia-packages:/home/jovyan/.julia
+
+volumes:
+  julia-packages:
       

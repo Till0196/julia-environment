@@ -12,6 +12,13 @@ Juliaがインストール済みのJupyter Notebookが立ち上がるDocker環�
 GitHub Actionsにて、毎日日本時間の24:00に自動でイメージを生成しています。  
 実行時間を削減するため、上流イメージに変更がある場合のみ更新が行われます。
 
+イメージ内に下記Juliaパッケージが組み込まれています。
+ - `Plots`
+ - `PyPlot`
+ - `Polynomials`
+
+Juliaパッケージの追加や更新は、永続化ボリューム内に保存されます。
+
 ## 使い方
 
 Dockerと[Docker compose](https://docs.docker.jp/v1.12/compose/install.html)が必要です。
