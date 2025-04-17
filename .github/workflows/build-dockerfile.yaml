@@ -201,7 +201,7 @@ jobs:
         with:
           cache-map: |
             {
-              "opt-julia-cache": "/opt/julia-cache"
+              "opt-julia-cache": "/opt/julia-cache",
               "opt-conda-pkgs": "/opt/conda/pkgs"
             }
           skip-extraction: false
