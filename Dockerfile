@@ -10,7 +10,7 @@ ARG JULIA_DEPOT_PATH=/opt/julia-cache:${JULIA_DEPOT_PATH}
 
 RUN --mount=type=cache,target=/opt/julia-cache,sharing=locked \
     chown -R ${NB_UID}:${NB_GID} /opt/julia-cache && \
-    su -p ${NB_USER} -c "julia -e ' \
+    su -p ${NB_USER} -c "PYTHON=`which python3` PYCALL_DEBUG_BUILD=yes julia -e ' \
         using Pkg; \
         Pkg.update(); \
         Pkg.add([ \
