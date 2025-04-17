@@ -18,7 +18,7 @@ env:
   #set tagname
   TAG_NAME: latest
   #set targetdir
-  TARGET_DIR: ./
+  TARGET_DIR: .
 
 jobs:
   upstream-digest-check:
@@ -36,7 +36,7 @@ jobs:
           touch ~/.base_image_digest/digests.txt
 
           # Dockerfile のパスを指定
-          DOCKERFILE="Dockerfile"
+          DOCKERFILE="${{ env.TARGET_DIR }}/Dockerfile"
 
           # Dockerfile 内の FROM ステートメントの値を再帰的に取得する関数
           function get_from_statements() {
@@ -155,18 +155,69 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
+      - name: Get current date
+        run: |
+          echo "CURRENT_TIME=$(TZ=Asia/Tokyo date "+%Y-%m-%d-%H%M%S")" >> $GITHUB_ENV
+
+      - name: Get latest cache key
+        id: cache-key-current
+        # 現在のブランチで10MB以上かつ最も新しいキャッシュを取得
+        run: |
+          LATEST_CACHE_KEY=$(gh cache list --ref ${{ github.ref }} --key cache-pkgs-${{ env.PLATFORM_PAIR }}- --json key,sizeInBytes,createdAt --jq '.[] | select(.sizeInBytes >= 10*1024*1024) | .key' | head -n 1)
+          echo "LATEST_CACHE_KEY=$LATEST_CACHE_KEY" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get latest cache key for master branch if not found
+        if: env.LATEST_CACHE_KEY == ''
+        # もし現在のブランチでキャッシュが見つからなかった場合はmasterブランチのキャッシュを取得
+        id: cache-key-master
+        run: |
+          LATEST_CACHE_KEY=$(gh cache list --ref refs/heads/main --key cache-pkgs-${{ env.PLATFORM_PAIR }}- --json key,sizeInBytes,createdAt --jq '.[] | select(.sizeInBytes >= 10*1024*1024) | .key' | head -n 1)
+          echo "LATEST_CACHE_KEY=$LATEST_CACHE_KEY" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Echo latest cache key
+        run: |
+          echo $LATEST_CACHE_KEY
+
+      - name: Package Cache
+        id: cache
+        uses: actions/cache@v4
+        with:
+          # keyに固定値を指定するとキャッシュがアップロードされないので、現在の日時を指定
+          key: cache-pkgs-${{ env.PLATFORM_PAIR }}-${{ env.CURRENT_TIME }}
+          restore-keys: | 
+            ${{ env.LATEST_CACHE_KEY }}
+            cache-pkgs-${{ env.PLATFORM_PAIR }}-
+          path: |
+            opt-julia-cache
+            opt-conda-pkgs
+
+      - name: inject cache into docker
+        # v3.1.2のcommitを指定
+        uses: reproducible-containers/buildkit-cache-dance@61bd187f75f25d38e056fdd48506fac777c6ebec
+        with:
+          cache-map: |
+            {
+              "opt-julia-cache": "/opt/julia-cache"
+              "opt-conda-pkgs": "/opt/conda/pkgs"
+            }
+          skip-extraction: false
+
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: ./Dockerfile
+          context: ${{ env.TARGET_DIR }}
+          file: ${{ env.TARGET_DIR }}/Dockerfile
           push: true
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=platform-${{ env.PLATFORM_PAIR }}
+          cache-to: type=gha,mode=max,scope=platform-${{ env.PLATFORM_PAIR }}
 
       - name: Export digest
         run: |

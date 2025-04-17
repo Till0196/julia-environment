@@ -17,8 +17,8 @@ services:
       - LANG=ja_JP.UTF-8
       - LANGUAGE=ja_JP.UTF-8
       - JULIA_DEPOT_PATH=/home/jovyan/.julia:/opt/julia
-      - JULIA_PKGDIR=/home/jovyan/.julia:/opt/julia
-      - CHOWN_EXTRA=/home/jovyan/.julia
+      - CHOWN_HOME=yes
+      - CHOWN_HOME_OPTS=-R
     ports:
       - 8888:8888
     volumes:
@@ -28,4 +28,3 @@ services:
 
 volumes:
   julia-packages:
-      
